@@ -1,3 +1,4 @@
+/.gradle/8.0/fileChanges/last-build.bin
 # Default ignored files
 /shelf/
 /workspace.xml
@@ -58,3 +59,6 @@ bin/
 
 .gradle/
 .idea/
+/compiler.xml
+/gradle.xml
+/jarRepositories.xml
