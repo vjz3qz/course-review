@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    implementation group: 'org.json', name: 'json', version: '20220924'
     // SQLite Database Library (JDBC)
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.36.0.3'
 
