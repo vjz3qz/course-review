@@ -330,4 +330,7 @@ public class Database {
     //TODO add sufficient error handling
 
     //TODO create system for students to have id
+
+    // couldn't add second course
+    // department not capitalized
 }
