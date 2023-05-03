@@ -123,6 +123,14 @@ public class Database {
         return null;
     }
 
+    public Student getStudentByName(String name) {
+        List<Student> students = getAllStudents();
+        for (Student student: students)
+            if(student.getName().equals(name))
+                return student;
+        return null;
+    }
+
     private Student getStudentByID(int studentID) {
         List<Student> students = getAllStudents();
         for (Student student: students)

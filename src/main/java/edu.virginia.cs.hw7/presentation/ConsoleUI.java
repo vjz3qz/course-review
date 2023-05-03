@@ -1,11 +1,10 @@
 package edu.virginia.cs.hw7.presentation;
 
+import edu.virginia.cs.hw7.businesslogic.Service;
 import edu.virginia.cs.hw7.data.Database;
 import edu.virginia.cs.hw7.model.Course;
-import edu.virginia.cs.hw7.model.Review;
 import edu.virginia.cs.hw7.model.Student;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -15,6 +14,7 @@ public class ConsoleUI {
 
 
     public static void main(String[] args) {
+        Service service = new Service();
         database.connect();
         database.createTables();
 
@@ -25,21 +25,16 @@ public class ConsoleUI {
             int choice = scanner.nextInt();
             scanner.nextLine(); // consume newline
 
+            String name;
+            String password;
+
             switch (choice) {
-                case 1:
-                    String name;
-                    String password;
+                case 1 -> {
                     name = getName();
                     password = getPassword();
-                    Student student = database.getStudentByLogin(name, password);
-                    // todo check if student exists
-                    // if exists, print this
-                    if (student == null) {
-                        System.out.println("Invalid login credentials.");
+                    Student student = service.getStudentByLogin(name, password);
+                    if (student == null)
                         break;
-                    }
-
-                    // todo if not exists, say user does not exist
 
                     boolean logout = false;
                     System.out.println("Welcome " + student.getName() + "!");
@@ -53,66 +48,42 @@ public class ConsoleUI {
                         int catalogNumber;
 
                         switch (choice) {
-                            case 1 -> { //print all courses
-                                // TODO add to business logic
-                                List<Course> courses = database.getAllCourses();
-                                for (Course course : courses) {
-                                    System.out.println(course);
-                                }
-                            }
+                            case 1 -> service.printAllCourses();
                             case 2 -> { // print reviews for course
                                 department = getDepartment();
                                 catalogNumber = getCatalogNumber();
-                                // TODO add to business logic
-                                List<Review> reviews = database.getCourseReviews(department, catalogNumber);
-                                for (Review review : reviews) {
-                                    System.out.println(review);
-                                }
+                                service.printAllReviews(department, catalogNumber);
                             }
                             case 3 -> { // add a review
                                 department = getDepartment();
                                 catalogNumber = getCatalogNumber();
-                                Course course = database.getCourseByDepartmentAndCatalogNumber(department, catalogNumber);
-                                if (course == null) {
-                                    Course newCourse = new Course(department, catalogNumber);
-                                    // TODO add to business logic
-                                    database.addCourse(newCourse);
-                                    System.out.println("New course added successfully!");
-                                    course = newCourse;
-                                }
+                                Course course = service.getCourse(department, catalogNumber);
                                 String message = getMessage();
                                 int rating = getRating();
-                                Review review = new Review(student, course, message, rating);
-                                // TODO add to business logic
-                                database.addReview(review);
-                                System.out.println("Review added successfully!");
+                                service.addReview(student, course, message, rating);
                             }
                             case 4 -> logout = true; // logout
                             default -> System.out.println("Invalid choice.");
                         }
                     }
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     name = getName();
                     password = getPassword();
                     System.out.print("To confirm, ");
                     String confirmed = getPassword();
-                    if (!confirmed.equals(password)) {
-                        System.out.println("Passwords do not match.");
-                        break;
-                    }
-                    // TODO add to business logic
-                    database.addStudent(new Student(name, password));
-                    System.out.println("Registration successful!");
-                    break;
-                case 3:
+                    service.registerUser(name, password, confirmed);
+                }
+                case 3 -> {
                     System.out.println("Goodbye!");
                     System.exit(0);
-                default:
-                    System.out.println("Invalid choice.");
-                    break;
+                }
+
+                default -> System.out.println("Invalid choice.");
             }
         }
+
+
 
 
     }
