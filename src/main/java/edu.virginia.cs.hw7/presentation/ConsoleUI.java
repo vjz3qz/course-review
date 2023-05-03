@@ -79,10 +79,13 @@ public class ConsoleUI {
                                 System.out.println("Enter your rating (1-5):");
                                 int rating = scanner.nextInt();
 
-                                Course course = database.getCourseByDepartmentAndCatalogNumber(department, String.valueOf(catalogNumber));
+                                Course course = database.getCourseByDepartmentAndCatalogNumber(department, catalogNumber);
+
                                 if (course == null) {
-                                    System.out.println("Invalid course.");
-                                    break;
+                                    Course newCourse = new Course(department, catalogNumber);
+                                    database.addCourse(newCourse);
+                                    System.out.println("New course added successfully!");
+                                    course = newCourse;
                                 }
 
                                 Review review = new Review(student, course, message, rating);

@@ -138,10 +138,10 @@ public class Database {
         return getStudentByLogin(student.getName(), student.getPassword()).getId();
     }
 
-    public Course getCourseByDepartmentAndCatalogNumber(String department, String catalogNumber) {
+    public Course getCourseByDepartmentAndCatalogNumber(String department, int catalogNumber) {
         List<Course> courses = getAllCourses();
         for (Course course : courses) {
-            if (course.getDepartment().equals(department) && String.valueOf(course.getCatalogNumber()).equals(catalogNumber)) {
+            if (course.getDepartment().equals(department) && course.getCatalogNumber() == catalogNumber) {
                 return course;
             }
         }
