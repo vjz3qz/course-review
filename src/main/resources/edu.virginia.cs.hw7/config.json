@@ -1,4 +1,4 @@
 {
   "endpoints": {},
-  "database": "bus_stops.sqlite3"
+  "database": "Test.sqlite3"
 }

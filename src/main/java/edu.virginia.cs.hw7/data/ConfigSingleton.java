@@ -42,8 +42,8 @@ public class ConfigSingleton {
         } catch (Exception e) {
             System.out.println("ERROR getting JSON from config.json file");
         }
-        String stopsEndpoint = json.getJSONObject("endpoints").getString("stops");
-        String linesEndpoint = json.getJSONObject("endpoints").getString("lines");
+        //String stopsEndpoint = json.getJSONObject("endpoints").getString("stops");
+        //String linesEndpoint = json.getJSONObject("endpoints").getString("lines");
         String database = json.getString("database");
 //        setBusStopsURL(stopsEndpoint);
 //        setBusLinesURL(linesEndpoint);
