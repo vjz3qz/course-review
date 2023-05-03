@@ -39,58 +39,63 @@ public class ConsoleUI {
                         break;
                     }
 
+                    boolean choice4 = false;
                     System.out.println("Welcome " + student.getName() + "!");
-                    System.out.println("1. View courses");
-                    System.out.println("2. View course reviews");
-                    System.out.println("3. Add course review");
-                    System.out.println("4. Logout");
 
-                    choice = scanner.nextInt();
-                    scanner.nextLine(); // consume newline
+                    while(!choice4) {
+                        System.out.println("1. View courses");
+                        System.out.println("2. View course reviews");
+                        System.out.println("3. Add course review");
+                        System.out.println("4. Logout");
 
-                    switch (choice) {
-                        case 1:
-                            List<Course> courses = database.getAllCourses();
-                            for (Course course : courses) {
-                                System.out.println(course.getDepartment() + " " + course.getCatalogNumber() + " - " + database.getCourseReviews(course.getDepartment(), course.getCatalogNumber()).size() + " reviews");
-                            }
-                            break;
-                        case 2:
-                            System.out.println("Enter department:");
-                            String dep = scanner.nextLine();
-                            System.out.println("Enter catalog number:");
-                            int catNum = scanner.nextInt();
-                            List<Review> reviews = database.getCourseReviews(dep, catNum);
-                            for (Review review : reviews) {
-                                System.out.println(dep + " " + catNum + ": (" + review.getRating() + ") " + review.getMessage());
-                            }
-                            break;
-                        case 3:
-                            System.out.println("Enter department:");
-                            String department = scanner.nextLine();
-                            System.out.println("Enter catalog number:");
-                            int catalogNumber = scanner.nextInt();
-                            scanner.nextLine(); // consume newline
-                            System.out.println("Enter your review message:");
-                            String message = scanner.nextLine();
-                            System.out.println("Enter your rating (1-5):");
-                            int rating = scanner.nextInt();
+                        choice = scanner.nextInt();
+                        scanner.nextLine(); // consume newline
 
-                            Course course = database.getCourseByDepartmentAndCatalogNumber(department, String.valueOf(catalogNumber));
-                            if (course == null) {
-                                System.out.println("Invalid course.");
+                        switch (choice) {
+                            case 1:
+                                List<Course> courses = database.getAllCourses();
+                                for (Course course : courses) {
+                                    System.out.println(course.getDepartment() + " " + course.getCatalogNumber() + " - " + database.getCourseReviews(course.getDepartment(), course.getCatalogNumber()).size() + " reviews");
+                                }
                                 break;
-                            }
+                            case 2:
+                                System.out.println("Enter department:");
+                                String dep = scanner.nextLine();
+                                System.out.println("Enter catalog number:");
+                                int catNum = scanner.nextInt();
+                                List<Review> reviews = database.getCourseReviews(dep, catNum);
+                                for (Review review : reviews) {
+                                    System.out.println(dep + " " + catNum + ": (" + review.getRating() + ") " + review.getMessage());
+                                }
+                                break;
+                            case 3:
+                                System.out.println("Enter department:");
+                                String department = scanner.nextLine();
+                                System.out.println("Enter catalog number:");
+                                int catalogNumber = scanner.nextInt();
+                                scanner.nextLine(); // consume newline
+                                System.out.println("Enter your review message:");
+                                String message = scanner.nextLine();
+                                System.out.println("Enter your rating (1-5):");
+                                int rating = scanner.nextInt();
 
-                            Review review = new Review(student, course, message, rating);
-                            database.addReview(review);
-                            System.out.println("Review added successfully!");
-                            break;
-                        case 4:
-                            break;
-                        default:
-                            System.out.println("Invalid choice.");
-                            break;
+                                Course course = database.getCourseByDepartmentAndCatalogNumber(department, String.valueOf(catalogNumber));
+                                if (course == null) {
+                                    System.out.println("Invalid course.");
+                                    break;
+                                }
+
+                                Review review = new Review(student, course, message, rating);
+                                database.addReview(review);
+                                System.out.println("Review added successfully!");
+                                break;
+                            case 4:
+                                choice4 = true;
+                                break;
+                            default:
+                                System.out.println("Invalid choice.");
+                                break;
+                        }
                     }
                     break;
                 case 2:
