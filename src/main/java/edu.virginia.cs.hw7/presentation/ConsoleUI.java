@@ -20,10 +20,7 @@ public class ConsoleUI {
 
         scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("Welcome to Course Review System!");
-            System.out.println("1. Login");
-            System.out.println("2. Register");
-            System.out.println("3. Quit");
+            printLoginOptions();
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // consume newline
@@ -35,77 +32,77 @@ public class ConsoleUI {
                     name = getName();
                     password = getPassword();
                     Student student = database.getStudentByLogin(name, password);
+                    // todo check if student exists
+                    // if exists, print this
                     if (student == null) {
                         System.out.println("Invalid login credentials.");
                         break;
                     }
 
+                    // todo if not exists, say user does not exist
+
                     boolean logout = false;
                     System.out.println("Welcome " + student.getName() + "!");
 
                     while (!logout) {
-                        System.out.println("1. View courses");
-                        System.out.println("2. View course reviews");
-                        System.out.println("3. Add course review");
-                        System.out.println("4. Logout");
+                        printMainMenuOptions();
 
                         choice = scanner.nextInt();
                         scanner.nextLine(); // consume newline
-                        String department = null;
-                        int catalogNumber = 0;
-                        String catalogNumberStr = null;
+                        String department;
+                        int catalogNumber;
+
                         switch (choice) {
-                            case 1:
+                            case 1 -> { //print all courses
+                                // TODO add to business logic
                                 List<Course> courses = database.getAllCourses();
                                 for (Course course : courses) {
                                     System.out.println(course);
                                 }
-                                break;
-                            case 2:
-                                department = getDepartment(department);
-
-                                catalogNumber = getCatalogNumber(catalogNumberStr, catalogNumber);
+                            }
+                            case 2 -> { // print reviews for course
+                                department = getDepartment();
+                                catalogNumber = getCatalogNumber();
+                                // TODO add to business logic
                                 List<Review> reviews = database.getCourseReviews(department, catalogNumber);
                                 for (Review review : reviews) {
                                     System.out.println(review);
                                 }
-                                break;
-                            case 3:
-                                department = getDepartment(department);
-
-                                catalogNumber = getCatalogNumber(catalogNumberStr, catalogNumber);
-
-                                Course course = database.getCourseByDepartmentAndCatalogNumber(department.toUpperCase(), catalogNumber);
-
+                            }
+                            case 3 -> { // add a review
+                                department = getDepartment();
+                                catalogNumber = getCatalogNumber();
+                                Course course = database.getCourseByDepartmentAndCatalogNumber(department, catalogNumber);
                                 if (course == null) {
-                                    Course newCourse = new Course(department.toUpperCase(), catalogNumber);
+                                    Course newCourse = new Course(department, catalogNumber);
+                                    // TODO add to business logic
                                     database.addCourse(newCourse);
                                     System.out.println("New course added successfully!");
                                     course = newCourse;
                                 }
-
                                 String message = getMessage();
-
                                 int rating = getRating();
-
                                 Review review = new Review(student, course, message, rating);
+                                // TODO add to business logic
                                 database.addReview(review);
                                 System.out.println("Review added successfully!");
-                                break;
-                            case 4:
-                                logout = true;
-                                break;
-                            default:
-                                System.out.println("Invalid choice.");
-                                break;
+                            }
+                            case 4 -> logout = true; // logout
+                            default -> System.out.println("Invalid choice.");
                         }
                     }
                     break;
                 case 2:
                     name = getName();
                     password = getPassword();
-                    student = new Student(name, password);
-                    database.addStudent(student);
+                    System.out.print("To confirm, ");
+                    String confirmed = getPassword();
+                    if (!confirmed.equals(password)) {
+                        System.out.println("Passwords do not match.");
+                        break;
+                    }
+                    // TODO add to business logic
+                    database.addStudent(new Student(name, password));
                     System.out.println("Registration successful!");
                     break;
                 case 3:
@@ -118,6 +115,20 @@ public class ConsoleUI {
         }
 
 
+    }
+
+    private static void printMainMenuOptions() {
+        System.out.println("1. View courses");
+        System.out.println("2. View course reviews");
+        System.out.println("3. Add course review");
+        System.out.println("4. Logout");
+    }
+
+    private static void printLoginOptions() {
+        System.out.println("Welcome to Course Review System!");
+        System.out.println("1. Login");
+        System.out.println("2. Register");
+        System.out.println("3. Quit");
     }
 
     private static String getPassword() {
@@ -180,14 +191,14 @@ public class ConsoleUI {
         return message;
     }
 
-    private static int getCatalogNumber(String catalogNumberStr, int catalogNumber) {
+    private static int getCatalogNumber() {
         System.out.println("Enter catalog number:");
-        catalogNumberStr = scanner.nextLine();
+        String catalogNumberStr = scanner.nextLine();
         while (catalogNumberStr.isEmpty()) {
             System.out.println("Catalog number cannot be empty. Please enter catalog number:");
             catalogNumberStr = scanner.nextLine();
         }
-        catalogNumber = Integer.parseInt(catalogNumberStr);
+        int catalogNumber = Integer.parseInt(catalogNumberStr);
         while (catalogNumber < 1000 || catalogNumber > 9999) {
             System.out.println("Catalog number should be an integer between 1000 and 9999. Please enter Catalog number:");
             catalogNumberStr = scanner.nextLine();
@@ -196,9 +207,9 @@ public class ConsoleUI {
         return catalogNumber;
     }
 
-    private static String getDepartment(String department) {
+    private static String getDepartment() {
         System.out.println("Enter department:");
-        department = scanner.nextLine();
+        String department = scanner.nextLine();
         while (department.isEmpty()) {
             System.out.println("Department cannot be empty. Please enter department:");
             department = scanner.nextLine();
@@ -207,6 +218,6 @@ public class ConsoleUI {
             System.out.println("Department must be 2 letters. Please enter department:");
             department = scanner.nextLine();
         }
-        return department;
+        return department.toUpperCase();
     }
 }
