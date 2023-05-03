@@ -51,27 +51,37 @@ public class ConsoleUI {
 
                         choice = scanner.nextInt();
                         scanner.nextLine(); // consume newline
-
+                        String department;
+                        int catalogNumber;
                     switch (choice) {
                         case 1:
                             List<Course> courses = database.getAllCourses();
                             for (Course course : courses) {
-                                System.out.println(course.getDepartment() + " " + course.getCatalogNumber() + " - " + database.getCourseReviews(course.getDepartment(), course.getCatalogNumber()).size() + " reviews");
+                                System.out.println(course);
                             }
                             break;
                         case 2:
                             System.out.println("Enter department:");
-                            String dep = scanner.nextLine();
+                            department = scanner.nextLine();
+                            while (department.isEmpty()) {
+                                System.out.println("Department cannot be empty. Please enter department:");
+                                department = scanner.nextLine();
+                            }
+                            while(department.length() != 2) {
+                                System.out.println("Department must be 2 letters. Please enter department:");
+                                department = scanner.nextLine();
+                            }
+
                             System.out.println("Enter catalog number:");
                             int catNum = scanner.nextInt();
-                            List<Review> reviews = database.getCourseReviews(dep, catNum);
+                            List<Review> reviews = database.getCourseReviews(department, catNum);
                             for (Review review : reviews) {
-                                System.out.println(dep + " " + catNum + ": (" + review.getRating() + ") " + review.getMessage());
+                                System.out.println(review);
                             }
                             break;
                         case 3:
                             System.out.println("Enter department:");
-                            String department = scanner.nextLine();
+                            department = scanner.nextLine();
                             while (department.isEmpty()) {
                                 System.out.println("Department cannot be empty. Please enter department:");
                                 department = scanner.nextLine();
@@ -87,7 +97,7 @@ public class ConsoleUI {
                                 System.out.println("Catalog number cannot be empty. Please enter catalog number:");
                                 catalogNumberStr = scanner.nextLine();
                             }
-                            int catalogNumber = Integer.parseInt(catalogNumberStr);
+                            catalogNumber = Integer.parseInt(catalogNumberStr);
                             while (catalogNumber < 1000 || catalogNumber > 9999) {
                                 System.out.println("Catalog number should be an integer between 1000 and 9999. Please enter Catalog number:");
                                 catalogNumberStr = scanner.nextLine();
@@ -166,5 +176,8 @@ public class ConsoleUI {
                     break;
             }
         }
+
+
+
     }
 }
