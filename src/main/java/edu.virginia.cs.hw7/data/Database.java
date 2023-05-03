@@ -138,6 +138,17 @@ public class Database {
         return getStudentByLogin(student.getName(), student.getPassword()).getId();
     }
 
+    public Course getCourseByDepartmentAndCatalogNumber(String department, String catalogNumber) {
+        List<Course> courses = getAllCourses();
+        for (Course course : courses) {
+            if (course.getDepartment().equals(department) && String.valueOf(course.getCatalogNumber()).equals(catalogNumber)) {
+                return course;
+            }
+        }
+        return null;
+    }
+
+
     public void addStudent(Student student) {
         String sql = String.format("""
         insert into Students(name, password) values('%s', '%s');""",
@@ -231,6 +242,23 @@ public class Database {
         } catch (SQLException e) {
             throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
         }
+    }
+
+    public int getCourseReviews(String courseCode) {
+        String query = "SELECT COUNT(*) FROM Reviews WHERE courseID = ?";
+        int numReviews = 0;
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, courseCode);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                numReviews = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting reviews for course " + courseCode + ": " + e.getMessage());
+        }
+
+        return numReviews;
     }
 
     public List<Review> getAllReviews() {
