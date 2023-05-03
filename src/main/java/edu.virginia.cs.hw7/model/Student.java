@@ -10,12 +10,12 @@ public class Student {
 
 
     private int id;
-    private String computingId;
+    private String name;
     private String password;
 
-    public Student(int id, String computingId, String password) {
+    public Student(int id, String name, String password) {
         this.id = id;
-        this.computingId = computingId;
+        this.name = name;
         this.password = password;
     }
 
@@ -27,12 +27,12 @@ public class Student {
         this.id = id;
     }
 
-    public String getComputingId() {
-        return computingId;
+    public String getName() {
+        return name;
     }
 
-    public void setComputingId(String computingId) {
-        this.computingId = computingId;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -47,7 +47,7 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "id=" + id +
-                ", computingId='" + computingId + '\'' +
+                ", computingId='" + name + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

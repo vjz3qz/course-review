@@ -9,7 +9,7 @@ public class Main {
         Database db = new Database();
         // create a sqlite db file if it does not exist
         db.connect();
-
+        db.createTables();
 
 
     }
