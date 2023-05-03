@@ -47,7 +47,7 @@ public class Student {
     public String toString() {
         return "Student{" +
                 "id=" + id +
-                ", computingId='" + name + '\'' +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

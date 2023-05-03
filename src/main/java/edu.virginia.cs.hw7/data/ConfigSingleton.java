@@ -7,8 +7,6 @@ import java.io.*;
 public class ConfigSingleton {
     private static final String configurationFileName = "src/main/resources/edu.virginia.cs.hw7/config.json";
     private static ConfigSingleton instance;
-    //private String busStopsURL;
-    //private String busLinesURL;
     private String databaseName;
 
     private ConfigSingleton() {
@@ -23,14 +21,6 @@ public class ConfigSingleton {
         return instance;
     }
 
-//    public String getBusStopsURL() {
-//        return busStopsURL;
-//    }
-//
-//    public String getBusLinesURL() {
-//        return busLinesURL;
-//    }
-
     public String getDatabaseFilename() {
         return databaseName;
     }
@@ -42,11 +32,7 @@ public class ConfigSingleton {
         } catch (Exception e) {
             System.out.println("ERROR getting JSON from config.json file");
         }
-        //String stopsEndpoint = json.getJSONObject("endpoints").getString("stops");
-        //String linesEndpoint = json.getJSONObject("endpoints").getString("lines");
         String database = json.getString("database");
-//        setBusStopsURL(stopsEndpoint);
-//        setBusLinesURL(linesEndpoint);
         setDatabaseFilename(database);
     }
 
@@ -94,12 +80,4 @@ public class ConfigSingleton {
     private void setDatabaseFilename(String database) {
         databaseName = database;
     }
-
-//    private void setBusStopsURL(String stopsEndpoint) {
-//        busStopsURL = stopsEndpoint;
-//    }
-//
-//    private void setBusLinesURL(String linesEndpoint) {
-//        busLinesURL = linesEndpoint;
-//    }
 }

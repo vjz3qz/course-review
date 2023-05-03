@@ -1,5 +1,7 @@
 package edu.virginia.cs.hw7.data;
 
+import edu.virginia.cs.hw7.model.Course;
+import edu.virginia.cs.hw7.model.Review;
 import edu.virginia.cs.hw7.model.Student;
 import org.sqlite.SQLiteException;
 
@@ -68,6 +70,7 @@ public class Database {
                     default -> throw new IllegalArgumentException("Invalid table name: " + tableName);
                 };
                 statement.executeUpdate(sql);
+                statement.close();
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
@@ -105,6 +108,7 @@ public class Database {
                 String password = resultSet.getString("password");
                 students.add(new Student(id, name, password));
             }
+            statement.close();
             return students;
         } catch(SQLException e){
             throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
@@ -119,9 +123,17 @@ public class Database {
         return null;
     }
 
+    private Student getStudentByID(int studentID) {
+        List<Student> students = getAllStudents();
+        for (Student student: students)
+            if(student.getId() == studentID)
+                return student;
+        return null;
+    }
+
     public void addStudent(Student student) {
         String sql = String.format("""
-            insert into Students(id, name, password) values(%d, %s", "%s");""",
+        insert into Students(id, name, password) values(%d, '%s', '%s');""",
                 student.getId(), student.getName(), student.getPassword());
         try {
             String checkExistsSql = "SELECT * FROM Students WHERE id= " + student.getId() + " ";
@@ -131,6 +143,109 @@ public class Database {
                 throw new IllegalArgumentException("Student already exists!");
             } else {
                 statement.executeUpdate(sql);
+                statement.close();
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
+        }
+    }
+
+    public List<Course> getAllCourses() {
+        try{
+            if (connection == null || connection.isClosed()) {
+                throw new IllegalStateException("Manager is not connected");
+            }
+            if(tableDoesNotExists("Courses")){
+                throw new IllegalStateException("Courses table does not exist");
+            }
+            String sql = "SELECT * FROM Courses;";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            List<Course> courses = new ArrayList<>();
+            while(resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String department = resultSet.getString("department");
+                int catalogNumber = resultSet.getInt("catalogNumber");
+                courses.add(new Course(id, department, catalogNumber));
+            }
+            statement.close();
+            return courses;
+        } catch(SQLException e){
+            throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
+        }
+    }
+
+    private Course getCourseByID(int courseID) {
+        List<Course> courses = getAllCourses();
+        for (Course course: courses)
+            if(course.getId() == courseID)
+                return course;
+        return null;
+    }
+
+    public void addCourse(Course course) {
+        String sql = String.format("""
+        insert into Courses(id, department, catalogNumber) values(%d, '%s', '%s');""",
+                course.getId(), course.getDepartment(), course.getCatalogNumber());
+        try {
+            String checkExistsSql = "SELECT * FROM Courses WHERE id= " + course.getId() + " ";
+            Statement statement = connection.createStatement();
+            ResultSet checkExists = statement.executeQuery(checkExistsSql);
+            if (checkExists.next()) {
+                throw new IllegalArgumentException("Course already exists!");
+            } else {
+                statement.executeUpdate(sql);
+                statement.close();
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
+        }
+    }
+
+    public List<Review> getAllReviews() {
+        try{
+            if (connection == null || connection.isClosed()) {
+                throw new IllegalStateException("Manager is not connected");
+            }
+            if(tableDoesNotExists("Reviews")){
+                throw new IllegalStateException("Reviews table does not exist");
+            }
+            String sql = "SELECT * FROM Reviews;";
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            List<Review> reviews = new ArrayList<>();
+            while(resultSet.next()) {
+                int id = resultSet.getInt("id");
+                int studentID = resultSet.getInt("studentID");
+                Student student = getStudentByID(studentID);
+                int courseID = resultSet.getInt("courseID");
+                Course course = getCourseByID(courseID);
+                String message = resultSet.getString("message");
+                int rating = resultSet.getInt("rating");
+                if(student != null) {
+                    reviews.add(new Review(id, student, course, message, rating));
+                }
+            }
+            statement.close();
+            return reviews;
+        } catch(SQLException e){
+            throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
+        }
+    }
+
+    public void addReview(Review review) {
+        String sql = String.format("""
+        insert into Reviews(id, studentID, courseID, message, rating) values(%d, %d, %d, '%s', %d);""",
+                review.getId(), review.getStudent().getId(), review.getCourse().getId(), review.getMessage(), review.getRating());
+        try {
+            String checkExistsSql = "SELECT * FROM Reviews WHERE id= " + review.getId() + " ";
+            Statement statement = connection.createStatement();
+            ResultSet checkExists = statement.executeQuery(checkExistsSql);
+            if (checkExists.next()) {
+                throw new IllegalArgumentException("Review already exists!");
+            } else {
+                statement.executeUpdate(sql);
+                statement.close();
             }
         } catch (SQLException e) {
             throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
@@ -149,8 +264,7 @@ public class Database {
     }
 
     //todo
-    // courses: add one, get all, find single
-    // START TO look at reviews
+    // reviews: queries??
 
     //TODO rename all database columns
 }

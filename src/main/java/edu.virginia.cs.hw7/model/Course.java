@@ -9,9 +9,9 @@ public class Course {
     //Catalog_Number (such as "3140")
     private int id;
     private String department;
-    private String catalogNumber;
+    private int catalogNumber;
 
-    public Course(int id, String department, String catalogNumber) {
+    public Course(int id, String department, int catalogNumber) {
         this.id = id;
         this.department = department;
         this.catalogNumber = catalogNumber;
@@ -33,11 +33,11 @@ public class Course {
         this.department = department;
     }
 
-    public String getCatalogNumber() {
+    public int getCatalogNumber() {
         return catalogNumber;
     }
 
-    public void setCatalogNumber(String catalogNumber) {
+    public void setCatalogNumber(int catalogNumber) {
         this.catalogNumber = catalogNumber;
     }
 
