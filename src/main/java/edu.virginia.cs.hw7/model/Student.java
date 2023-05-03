@@ -13,6 +13,11 @@ public class Student {
     private String name;
     private String password;
 
+    public Student(String name, String password) {
+        this.name = name;
+        this.password = password;
+    }
+
     public Student(int id, String name, String password) {
         this.id = id;
         this.name = name;

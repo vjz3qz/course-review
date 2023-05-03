@@ -7,6 +7,12 @@ public class Review {
     private String message;
     private int rating;
 
+    public Review(Student student, Course course, String message, int rating) {
+        this.student = student;
+        this.course = course;
+        this.message = message;
+        this.rating = rating;
+    }
     public Review(int id, Student student, Course course, String message, int rating) {
         this.id = id;
         this.student = student;

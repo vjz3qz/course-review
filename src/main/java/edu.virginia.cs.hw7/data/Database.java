@@ -50,14 +50,14 @@ public class Database {
                 String sql = switch (tableName) {
                     case "Students" -> "CREATE TABLE Students (" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                            "name VARCHAR(100) NOT NULL," +
+                            "name VARCHAR(100) NOT NULL UNIQUE," +
                             "password VARCHAR(100) NOT NULL" +
                             ")";
-                    case "Courses" -> "CREATE TABLE Courses (" +
-                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                            "department VARCHAR(4) NOT NULL," +
-                            "catalogNumber VARCHAR(4) NOT NULL" +
-                            ")";
+                    case "Courses" -> "CREATE TABLE Courses (\n" +
+                            "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
+                            "    department VARCHAR(4) NOT NULL CHECK (LENGTH(department) <= 4),\n" +
+                            "    catalogNumber INTEGER(4) NOT NULL CHECK (catalogNumber BETWEEN 1000 AND 9999)\n" +
+                            ");";
                     case "Reviews" -> "CREATE TABLE Reviews (" +
                             "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                             "studentID INTEGER," +
@@ -131,16 +131,33 @@ public class Database {
         return null;
     }
 
+    private int getStudentIDFromStudent(Student student) {
+        // TODO check if right
+//        if(student.getId() != 0)
+//            return student.getId();
+        return getStudentByLogin(student.getName(), student.getPassword()).getId();
+    }
+
     public void addStudent(Student student) {
         String sql = String.format("""
-        insert into Students(id, name, password) values(%d, '%s', '%s');""",
-                student.getId(), student.getName(), student.getPassword());
+        insert into Students(name, password) values('%s', '%s');""",
+                student.getName(), student.getPassword());
         try {
-            String checkExistsSql = "SELECT * FROM Students WHERE id= " + student.getId() + " ";
+            String checkExistsSql = String.format("""
+                SELECT * FROM Students WHERE name='%s' AND password='%s'
+                """, student.getName(), student.getPassword());
+
+            String checkUniqueNameSql = String.format("""
+                SELECT * FROM Students WHERE name='%s'
+                """, student.getName());
+
             Statement statement = connection.createStatement();
             ResultSet checkExists = statement.executeQuery(checkExistsSql);
+            ResultSet checkUniqueName = statement.executeQuery(checkUniqueNameSql);
             if (checkExists.next()) {
                 throw new IllegalArgumentException("Student already exists!");
+            } if (checkUniqueName.next()) {
+                throw new IllegalArgumentException("Student Name already exists!");
             } else {
                 statement.executeUpdate(sql);
                 statement.close();
@@ -183,12 +200,26 @@ public class Database {
         return null;
     }
 
+    private int getCourseIDByCourse(Course course) {
+        // todo check if right
+//        if(course.getId() != 0)
+//            return course.getId();
+        List<Course> courses = getAllCourses();
+        for (Course courseCandidate: courses)
+            if(courseCandidate.getDepartment().equals(course.getDepartment()) && courseCandidate.getCatalogNumber() == course.getCatalogNumber())
+                return courseCandidate.getId();
+        // todo add potential error handle for 0
+        return 0;
+    }
+
     public void addCourse(Course course) {
         String sql = String.format("""
-        insert into Courses(id, department, catalogNumber) values(%d, '%s', '%s');""",
-                course.getId(), course.getDepartment(), course.getCatalogNumber());
+        insert into Courses(department, catalogNumber) values('%s', '%s');""",
+                course.getDepartment(), course.getCatalogNumber());
         try {
-            String checkExistsSql = "SELECT * FROM Courses WHERE id= " + course.getId() + " ";
+            String checkExistsSql = String.format("""
+                SELECT * FROM Courses WHERE department='%s' AND catalogNumber='%d'
+                """, course.getDepartment(), course.getCatalogNumber());
             Statement statement = connection.createStatement();
             ResultSet checkExists = statement.executeQuery(checkExistsSql);
             if (checkExists.next()) {
@@ -234,9 +265,13 @@ public class Database {
     }
 
     public void addReview(Review review) {
+        // given a student, get an id
+        int studentID = getStudentIDFromStudent(review.getStudent());
+        // given a course, get an id
+        int courseID = getCourseIDByCourse(review.getCourse());
         String sql = String.format("""
-        insert into Reviews(id, studentID, courseID, message, rating) values(%d, %d, %d, '%s', %d);""",
-                review.getId(), review.getStudent().getId(), review.getCourse().getId(), review.getMessage(), review.getRating());
+        insert into Reviews(studentID, courseID, message, rating) values(%d, %d, '%s', %d);""",
+                studentID, courseID, review.getMessage(), review.getRating());
         try {
             String checkExistsSql = "SELECT * FROM Reviews WHERE id= " + review.getId() + " ";
             Statement statement = connection.createStatement();
@@ -263,8 +298,11 @@ public class Database {
         }
     }
 
-    //todo
-    // reviews: queries??
+    // todo: reviews queries??
 
     //TODO rename all database columns
+
+    //TODO add sufficient error handling
+
+    //TODO create system for students to have id
 }
