@@ -41,8 +41,9 @@ public class ConsoleUI {
 
                     System.out.println("Welcome " + student.getName() + "!");
                     System.out.println("1. View courses");
-                    System.out.println("2. Add course review");
-                    System.out.println("3. Logout");
+                    System.out.println("2. View course reviews");
+                    System.out.println("3. Add course review");
+                    System.out.println("4. Logout");
 
                     choice = scanner.nextInt();
                     scanner.nextLine(); // consume newline
@@ -51,10 +52,20 @@ public class ConsoleUI {
                         case 1:
                             List<Course> courses = database.getAllCourses();
                             for (Course course : courses) {
-                                System.out.println(course.getDepartment() + " " + course.getCatalogNumber() + " - " + database.getCourseReviews(String.valueOf(course.getId())) + " reviews");
+                                System.out.println(course.getDepartment() + " " + course.getCatalogNumber() + " - " + database.getCourseReviews(course.getDepartment(), course.getCatalogNumber()).size() + " reviews");
                             }
                             break;
                         case 2:
+                            System.out.println("Enter department:");
+                            String dep = scanner.nextLine();
+                            System.out.println("Enter catalog number:");
+                            int catNum = scanner.nextInt();
+                            List<Review> reviews = database.getCourseReviews(dep, catNum);
+                            for (Review review : reviews) {
+                                System.out.println(dep + " " + catNum + ": (" + review.getRating() + ") " + review.getMessage());
+                            }
+                            break;
+                        case 3:
                             System.out.println("Enter department:");
                             String department = scanner.nextLine();
                             System.out.println("Enter catalog number:");
@@ -75,7 +86,7 @@ public class ConsoleUI {
                             database.addReview(review);
                             System.out.println("Review added successfully!");
                             break;
-                        case 3:
+                        case 4:
                             break;
                         default:
                             System.out.println("Invalid choice.");

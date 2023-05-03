@@ -244,21 +244,18 @@ public class Database {
         }
     }
 
-    public int getCourseReviews(String courseCode) {
-        String query = "SELECT COUNT(*) FROM Reviews WHERE courseID = ?";
-        int numReviews = 0;
+    public List<Review> getCourseReviews(String department, int catalogNumber) {
+        List<Review> reviews = new ArrayList<>();
 
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, courseCode);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                numReviews = rs.getInt(1);
+        // Loop through all reviews in the database
+        for (Review review: getAllReviews()) {
+            // Check if the review matches the given department and catalogNumber
+            if (review.getCourse().getDepartment().equals(department) && review.getCourse().getCatalogNumber() == catalogNumber) {
+                reviews.add(review);
             }
-        } catch (SQLException e) {
-            System.err.println("Error getting reviews for course " + courseCode + ": " + e.getMessage());
         }
 
-        return numReviews;
+        return reviews;
     }
 
     public List<Review> getAllReviews() {
