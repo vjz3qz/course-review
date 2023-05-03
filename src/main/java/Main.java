@@ -7,10 +7,9 @@ public class Main {
         System.out.println("hello");
 
         Database db = new Database();
+        // create a sqlite db file if it does not exist
         db.connect();
-        db.deleteTables();
-        db.createTables();
-        db.deleteTables();
+
 
 
     }
