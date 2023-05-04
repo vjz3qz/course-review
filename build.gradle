@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'org.example'
+group = 'edu.virginia.cs.hw7'
 version = 'unspecified'
 
 repositories {

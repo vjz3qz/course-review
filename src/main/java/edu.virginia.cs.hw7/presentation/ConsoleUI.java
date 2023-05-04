@@ -1,7 +1,6 @@
 package edu.virginia.cs.hw7.presentation;
 
 import edu.virginia.cs.hw7.businesslogic.Service;
-import edu.virginia.cs.hw7.data.Database;
 import edu.virginia.cs.hw7.model.Course;
 import edu.virginia.cs.hw7.model.Student;
 
@@ -12,7 +11,7 @@ public class ConsoleUI {
     private static Scanner scanner;
 
 
-    public static void main(String[] args) {
+    public void run() {
         Service service = new Service();
 
         scanner = new Scanner(System.in);
