@@ -51,13 +51,17 @@ public class ConsoleUI {
                                 courseName = getCourse();
                                 department = courseName[0];
                                 catalogNumber = Integer.parseInt(courseName[1]);
-                                service.printAllReviews(department, catalogNumber);
+                                Course course = service.getCourse(department, catalogNumber);
+                                service.printAllReviews(course);
                             }
                             case 3 -> { // add a review
                                 courseName = getCourse();
                                 department = courseName[0];
                                 catalogNumber = Integer.parseInt(courseName[1]);
                                 Course course = service.getCourse(department, catalogNumber);
+                                if(service.reviewExists(student, course)) {
+                                    break;
+                                }
                                 String message = getMessage();
                                 int rating = getRating();
                                 service.addReview(student, course, message, rating);
@@ -79,13 +83,6 @@ public class ConsoleUI {
                     System.out.println("*".repeat(50));
                     System.exit(0);
                 }
-                //todo remove case 9 before submission
-                case 9 -> {
-                    service.printAllStudents();
-                    service.printAllCourses();
-                    service.printAllReviews();
-                }
-
                 default -> System.out.println("Invalid choice.");
             }
         }

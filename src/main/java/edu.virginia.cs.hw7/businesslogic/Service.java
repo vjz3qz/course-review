@@ -50,13 +50,26 @@ public class Service {
             System.out.println(course);
         }
     }
-    public void printAllReviews(String department, int catalogNumber) {
-        List<Review> reviews = database.getCourseReviews(department, catalogNumber);
+    public void printAllReviews(Course course) {
+        List<Review> reviews = database.getCourseReviews(course.getDepartment(), course.getCatalogNumber());
         if(reviews.size() == 0) {
             System.out.println("no reviews.");
             return;
         }
+        // Calculate the average rating
+        int totalRating = 0;
         for (Review review : reviews) {
+            totalRating += review.getRating();
+        }
+        double averageRating = 0;
+        if (!reviews.isEmpty()) {
+            averageRating = (double) totalRating / reviews.size();
+        }
+        // Print the average rating
+        System.out.println(course+" Review | Course Average: " + String.format("%.2f", averageRating) + "/5");
+
+        for (Review review : reviews) {
+            totalRating += review.getRating();
             System.out.println(review);
         }
     }
@@ -85,14 +98,16 @@ public class Service {
 
     public void addReview(Student student, Course course, String message, int rating) {
         Review review = new Review(student, course, message, rating);
+        database.addReview(review);
+        System.out.println("Review added successfully!");
+    }
 
-        // Check if the review already exists in the database
-        if (database.reviewExists(review)) {
-            System.out.println("A review for this course already exists.");
-        } else {
-            database.addReview(review);
-            System.out.println("Review added successfully!");
+    public boolean reviewExists(Student student, Course course) {
+        if (database.reviewExists(student, course)) {
+            System.out.println("User has already reviewed this course.");
+            return true;
         }
+        return false;
     }
 
     public void registerUser(String name, String password, String confirmed) {

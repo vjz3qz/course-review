@@ -3,7 +3,6 @@ package edu.virginia.cs.hw7.data;
 import edu.virginia.cs.hw7.model.Course;
 import edu.virginia.cs.hw7.model.Review;
 import edu.virginia.cs.hw7.model.Student;
-import org.sqlite.SQLiteException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -139,10 +138,7 @@ public class Database {
         return null;
     }
 
-    private int getStudentIDFromStudent(Student student) {
-        // TODO check if right
-//        if(student.getId() != 0)
-//            return student.getId();
+    private int getStudentIDByStudent(Student student) {
         return getStudentByLogin(student.getName(), student.getPassword()).getId();
     }
 
@@ -220,9 +216,6 @@ public class Database {
     }
 
     private int getCourseIDByCourse(Course course) {
-        // todo check if right
-//        if(course.getId() != 0)
-//            return course.getId();
         List<Course> courses = getAllCourses();
         for (Course courseCandidate: courses)
             if(courseCandidate.getDepartment().equals(course.getDepartment()) && courseCandidate.getCatalogNumber() == course.getCatalogNumber())
@@ -263,19 +256,6 @@ public class Database {
             }
         }
 
-        // Calculate the average rating
-        int totalRating = 0;
-        for (Review review : reviews) {
-            totalRating += review.getRating();
-        }
-        double averageRating = 0;
-        if (!reviews.isEmpty()) {
-            averageRating = (double) totalRating / reviews.size();
-        }
-
-        // Print the average rating
-        System.out.println("Course Average: " + String.format("%.2f", averageRating) + "/5");
-
         return reviews;
     }
 
@@ -313,7 +293,7 @@ public class Database {
 
     public void addReview(Review review) {
         // given a student, get an id
-        int studentID = getStudentIDFromStudent(review.getStudent());
+        int studentID = getStudentIDByStudent(review.getStudent());
         // given a course, get an id
         int courseID = getCourseIDByCourse(review.getCourse());
         String sql = String.format("""
@@ -350,7 +330,7 @@ public class Database {
 
 
 
-    public boolean reviewExists(Review reviewToCheck) {
+    public boolean reviewExists(Student student, Course course) {
         try {
             if (connection == null || connection.isClosed()) {
                 throw new IllegalStateException("Manager is not connected");
@@ -359,8 +339,8 @@ public class Database {
                 throw new IllegalStateException("Reviews table does not exist");
             }
 
-            int studentID = getStudentIDFromStudent(reviewToCheck.getStudent());
-            int courseID = getCourseIDByCourse(reviewToCheck.getCourse());
+            int studentID = getStudentIDByStudent(student);
+            int courseID = getCourseIDByCourse(course);
 
             String sql = String.format("SELECT * FROM Reviews WHERE studentID = %d AND courseID = %d;", studentID, courseID);
             Statement statement = connection.createStatement();
@@ -376,15 +356,7 @@ public class Database {
 
 
 }
-
-    // todo: reviews queries??
-
-    //TODO rename all database columns
-
     //TODO add sufficient error handling
 
-    //TODO create system for students to have id
 
-    // couldn't add second course
-    // department not capitalized
 
