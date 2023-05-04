@@ -159,18 +159,26 @@ public class ConsoleUI {
     private static int getRating() {
         System.out.println("Enter your rating (1-5):");
         String ratingStr = scanner.nextLine();
-        while (ratingStr.isEmpty()) {
-            System.out.println("Rating cannot be empty. Please enter your rating:");
+
+        while (ratingStr.isEmpty() || !ratingStr.matches("\\d")) {
+            System.out.println("Rating should be an integer between 1 and 5. Please enter your rating:");
             ratingStr = scanner.nextLine();
         }
+
         int rating = Integer.parseInt(ratingStr);
+
         while (rating < 1 || rating > 5) {
             System.out.println("Rating should be an integer between 1 and 5. Please enter your rating:");
             ratingStr = scanner.nextLine();
-            rating = Integer.parseInt(ratingStr);
+
+            // Check if the input contains any non-digit characters
+            if (ratingStr.matches("\\d")) {
+                rating = Integer.parseInt(ratingStr);
+            }
         }
         return rating;
     }
+
 
     private static String getMessage() {
         System.out.println("Enter your review message:");
@@ -216,8 +224,8 @@ public class ConsoleUI {
             System.out.println("Department cannot be empty.");
             return false;
         }
-        if (token.length() != 2) {
-            System.out.println("Department must be 2 letters.");
+        if (token.length() > 4) {
+            System.out.println("Department must be 4 letters or less.");
             return false;
         }
         return true;
