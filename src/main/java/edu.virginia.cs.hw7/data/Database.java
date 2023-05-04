@@ -19,7 +19,7 @@ public class Database {
     public void connect() {
         try {
             if (connection == null || connection.isClosed()) {
-                connection = DriverManager.getConnection(url + ConfigSingleton.getInstance().getDatabaseFilename());
+                connection = DriverManager.getConnection(url + "Reviews.sqlite3");
             } else {
                 throw new IllegalStateException("Manager is already connected");
             }

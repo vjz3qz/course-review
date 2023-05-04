@@ -4,6 +4,7 @@ import edu.virginia.cs.hw7.businesslogic.Service;
 import edu.virginia.cs.hw7.model.Course;
 import edu.virginia.cs.hw7.model.Student;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -19,8 +20,7 @@ public class ConsoleUI {
             System.out.println("*".repeat(50));
             printLoginOptions();
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+            int choice = getChoice();
 
             String name;
             String password;
@@ -40,8 +40,7 @@ public class ConsoleUI {
                         System.out.println("*".repeat(50));
                         printMainMenuOptions();
 
-                        choice = scanner.nextInt();
-                        scanner.nextLine(); // consume newline
+                        choice = getChoice();
                         String[] courseName;
                         String department;
                         int catalogNumber;
@@ -88,6 +87,23 @@ public class ConsoleUI {
 
 
 
+    }
+
+    private static int getChoice() {
+        int choice =0;
+        boolean validInput = false;
+        while (!validInput) {
+            try {
+                System.out.println("Enter an choice:");
+                choice = scanner.nextInt();
+                scanner.nextLine(); // consume newline
+                validInput = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter an choice.");
+                scanner.nextLine(); // consume the invalid input
+            }
+        }
+        return choice;
     }
 
     private static void printMainMenuOptions() {

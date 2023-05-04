@@ -5,5 +5,6 @@ public class Main {
         ConsoleUI consoleUI = new ConsoleUI();
         consoleUI.run();
 
+        //TODO figure out how to get json in jar file
     }
 }
