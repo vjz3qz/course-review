@@ -263,8 +263,22 @@ public class Database {
             }
         }
 
+        // Calculate the average rating
+        int totalRating = 0;
+        for (Review review : reviews) {
+            totalRating += review.getRating();
+        }
+        double averageRating = 0;
+        if (!reviews.isEmpty()) {
+            averageRating = (double) totalRating / reviews.size();
+        }
+
+        // Print the average rating
+        System.out.println("Course Average: " + String.format("%.2f", averageRating) + "/5");
+
         return reviews;
     }
+
 
     public List<Review> getAllReviews() {
         try{
@@ -331,6 +345,38 @@ public class Database {
         }
     }
 
+
+
+
+
+
+    public boolean reviewExists(Review reviewToCheck) {
+        try {
+            if (connection == null || connection.isClosed()) {
+                throw new IllegalStateException("Manager is not connected");
+            }
+            if (tableDoesNotExists("Reviews")) {
+                throw new IllegalStateException("Reviews table does not exist");
+            }
+
+            int studentID = getStudentIDFromStudent(reviewToCheck.getStudent());
+            int courseID = getCourseIDByCourse(reviewToCheck.getCourse());
+
+            String sql = String.format("SELECT * FROM Reviews WHERE studentID = %d AND courseID = %d;", studentID, courseID);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            boolean exists = resultSet.next();
+            statement.close();
+            return exists;
+        } catch (SQLException e) {
+            throw new IllegalStateException("Error executing SQL statements: " + e.getMessage());
+        }
+    }
+
+
+}
+
     // todo: reviews queries??
 
     //TODO rename all database columns
@@ -341,4 +387,4 @@ public class Database {
 
     // couldn't add second course
     // department not capitalized
-}
+
