@@ -85,8 +85,14 @@ public class Service {
 
     public void addReview(Student student, Course course, String message, int rating) {
         Review review = new Review(student, course, message, rating);
-        database.addReview(review);
-        System.out.println("Review added successfully!");
+
+        // Check if the review already exists in the database
+        if (database.reviewExists(review)) {
+            System.out.println("A review for this course already exists.");
+        } else {
+            database.addReview(review);
+            System.out.println("Review added successfully!");
+        }
     }
 
     public void registerUser(String name, String password, String confirmed) {
