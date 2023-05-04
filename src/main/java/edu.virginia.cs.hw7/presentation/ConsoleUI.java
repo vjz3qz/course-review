@@ -44,19 +44,22 @@ public class ConsoleUI {
 
                         choice = scanner.nextInt();
                         scanner.nextLine(); // consume newline
+                        String[] courseName;
                         String department;
                         int catalogNumber;
 
                         switch (choice) {
                             case 1 -> service.printAllCourses();
                             case 2 -> { // print reviews for course
-                                department = getDepartment();
-                                catalogNumber = getCatalogNumber();
+                                courseName = getCourse();
+                                department = courseName[0];
+                                catalogNumber = Integer.parseInt(courseName[1]);
                                 service.printAllReviews(department, catalogNumber);
                             }
                             case 3 -> { // add a review
-                                department = getDepartment();
-                                catalogNumber = getCatalogNumber();
+                                courseName = getCourse();
+                                department = courseName[0];
+                                catalogNumber = Integer.parseInt(courseName[1]);
                                 Course course = service.getCourse(department, catalogNumber);
                                 String message = getMessage();
                                 int rating = getRating();
@@ -161,34 +164,41 @@ public class ConsoleUI {
         }
         return message;
     }
-
-    private static int getCatalogNumber() {
-        System.out.println("Enter catalog number:");
-        String catalogNumberStr = scanner.nextLine();
-        while (catalogNumberStr.isEmpty()) {
-            System.out.println("Catalog number cannot be empty. Please enter catalog number:");
-            catalogNumberStr = scanner.nextLine();
+    private static String[] getCourse() {
+        System.out.println("Enter Course:");
+        String input = scanner.nextLine();
+        String[] tokens = input.split(" ");
+        while (tokens.length != 2 || !isValidDepartment(tokens[0]) || !isValidCatalogNumber(tokens[1])) {
+            System.out.println("Invalid course format. Enter course (e.g. CS 3140): ");
+            input = scanner.nextLine();
+            tokens = input.split(" ");
         }
-        int catalogNumber = Integer.parseInt(catalogNumberStr);
-        while (catalogNumber < 1000 || catalogNumber > 9999) {
-            System.out.println("Catalog number should be an integer between 1000 and 9999. Please enter Catalog number:");
-            catalogNumberStr = scanner.nextLine();
-            catalogNumber = Integer.parseInt(catalogNumberStr);
-        }
-        return catalogNumber;
+        tokens[0] = tokens[0].toUpperCase();
+        return tokens;
     }
 
-    private static String getDepartment() {
-        System.out.println("Enter department:");
-        String department = scanner.nextLine();
-        while (department.isEmpty()) {
-            System.out.println("Department cannot be empty. Please enter department:");
-            department = scanner.nextLine();
+    private static boolean isValidCatalogNumber(String token) {
+        while (token.isEmpty()) {
+            System.out.println("Catalog number cannot be empty.");
+            return false;
         }
-        while (department.length() != 2) {
-            System.out.println("Department must be 2 letters. Please enter department:");
-            department = scanner.nextLine();
+        int catalogNumber = Integer.parseInt(token);
+        while (catalogNumber < 1000 || catalogNumber > 9999) {
+            System.out.println("Catalog number should be an integer between 1000 and 9999.");
+            return false;
         }
-        return department.toUpperCase();
+        return true;
+    }
+
+    private static boolean isValidDepartment(String token) {
+        if (token.isEmpty()) {
+            System.out.println("Department cannot be empty.");
+            return false;
+        }
+        if (token.length() != 2) {
+            System.out.println("Department must be 2 letters.");
+            return false;
+        }
+        return true;
     }
 }

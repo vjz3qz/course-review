@@ -12,6 +12,8 @@ public class Service {
 
     public Service() {
         database = new Database();
+        database.connect();
+        database.createTables();
     }
     public Student getStudentByLogin(String name, String password) {
         Student student = database.getStudentByName(name);
@@ -29,12 +31,20 @@ public class Service {
 
     public void printAllCourses() {
         List<Course> courses = database.getAllCourses();
+        if(courses.size() == 0) {
+            System.out.println("no courses.");
+            return;
+        }
         for (Course course : courses) {
             System.out.println(course);
         }
     }
     public void printAllReviews(String department, int catalogNumber) {
         List<Review> reviews = database.getCourseReviews(department, catalogNumber);
+        if(reviews.size() == 0) {
+            System.out.println("no reviews.");
+            return;
+        }
         for (Review review : reviews) {
             System.out.println(review);
         }
