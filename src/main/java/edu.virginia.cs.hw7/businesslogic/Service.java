@@ -29,6 +29,17 @@ public class Service {
         return student;
     }
 
+    public void printAllStudents() {
+        List<Student> students = database.getAllStudents();
+        if(students.size() == 0) {
+            System.out.println("no students.");
+            return;
+        }
+        for (Student student : students) {
+            System.out.println(student);
+        }
+    }
+
     public void printAllCourses() {
         List<Course> courses = database.getAllCourses();
         if(courses.size() == 0) {
@@ -41,6 +52,17 @@ public class Service {
     }
     public void printAllReviews(String department, int catalogNumber) {
         List<Review> reviews = database.getCourseReviews(department, catalogNumber);
+        if(reviews.size() == 0) {
+            System.out.println("no reviews.");
+            return;
+        }
+        for (Review review : reviews) {
+            System.out.println(review);
+        }
+    }
+
+    public void printAllReviews() {
+        List<Review> reviews = database.getAllReviews();
         if(reviews.size() == 0) {
             System.out.println("no reviews.");
             return;

@@ -79,6 +79,12 @@ public class ConsoleUI {
                     System.out.println("*".repeat(50));
                     System.exit(0);
                 }
+                //todo remove case 9 before submission
+                case 9 -> {
+                    service.printAllStudents();
+                    service.printAllCourses();
+                    service.printAllReviews();
+                }
 
                 default -> System.out.println("Invalid choice.");
             }
