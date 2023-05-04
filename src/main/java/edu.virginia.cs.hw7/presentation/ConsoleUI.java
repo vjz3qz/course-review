@@ -9,17 +9,15 @@ import java.util.Scanner;
 
 public class ConsoleUI {
 
-    private static final Database database = new Database();
     private static Scanner scanner;
 
 
     public static void main(String[] args) {
         Service service = new Service();
-        database.connect();
-        database.createTables();
 
         scanner = new Scanner(System.in);
         while (true) {
+            System.out.println("*".repeat(50));
             printLoginOptions();
 
             int choice = scanner.nextInt();
@@ -27,7 +25,7 @@ public class ConsoleUI {
 
             String name;
             String password;
-
+            System.out.println("*".repeat(50));
             switch (choice) {
                 case 1 -> {
                     name = getName();
@@ -40,6 +38,7 @@ public class ConsoleUI {
                     System.out.println("Welcome " + student.getName() + "!");
 
                     while (!logout) {
+                        System.out.println("*".repeat(50));
                         printMainMenuOptions();
 
                         choice = scanner.nextInt();
@@ -79,6 +78,7 @@ public class ConsoleUI {
                 }
                 case 3 -> {
                     System.out.println("Goodbye!");
+                    System.out.println("*".repeat(50));
                     System.exit(0);
                 }
 
