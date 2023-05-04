@@ -57,7 +57,7 @@ public class Review {
 
     @Override
     public String toString() {
-        return course.getDepartment() + " " + course.getCatalogNumber() + " Review by " +
-                student.getName() + ": message = " + message + " | rating = " + rating + "/5";
+        return course.getDepartment() + " " + course.getCatalogNumber() + " Review by anonymous" +
+                  ": message = " + message + " | rating = " + rating + "/5";
     }
 }
