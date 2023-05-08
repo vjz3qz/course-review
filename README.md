@@ -10,10 +10,11 @@ To run this program, you will need the following:
 - SQLite JDBC driver (version 3.36.0.3)
 
 ## Getting Started
-
-1. Clone the repository to your local machine.
-2. Compile the program using `javac`.
-3. Run the program using `java`.
+#### IntelliJ:
+1) copy the .git link of this repository.
+2) Open a Project From Version Control in IntelliJ and paste the GitHub link.
+3) Open the Terminal tab in the newly created project and type ``` ./gradlew build```.
+4) Type ```java -jar build/libs/courseReview.jar``` into the Terminal.
 
 ## Design
 
